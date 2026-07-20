@@ -7,14 +7,21 @@ interface NoteFormProps {
   onClose: () => void;
 }
 
+interface NoteFormData {
+  title: string;
+  content: string;
+  tag: string;
+}
+
 const NoteForm = ({ onClose }: NoteFormProps) => {
   const queryClient = useQueryClient();
+  
   const { 
     register, 
     handleSubmit, 
     reset, 
     formState: { errors } 
-  } = useForm();
+  } = useForm<NoteFormData>();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createNote,
@@ -25,8 +32,12 @@ const NoteForm = ({ onClose }: NoteFormProps) => {
     },
   });
 
+  const onSubmit = (data: NoteFormData) => {
+    mutate(data);
+  };
+
   return (
-    <form className={css.form} onSubmit={handleSubmit((data) => mutate(data))}>
+    <form className={css.form} onSubmit={handleSubmit(onSubmit)}>
       
       <label className={css.formGroup} style={{ alignItems: 'flex-start' }}>
         Title
@@ -38,17 +49,18 @@ const NoteForm = ({ onClose }: NoteFormProps) => {
           className={css.input} 
           style={{ width: '100%' }} 
         />
-        {errors.title && <span className={css.error}>{errors.title.message as string}</span>}
+        {errors.title && <span className={css.error}>{errors.title.message}</span>}
       </label>
 
       <label className={css.formGroup} style={{ alignItems: 'flex-start' }}>
         Content
         <textarea 
-          {...register('content', { required: true })} 
+          {...register('content', { required: 'Content is required' })} 
           className={css.textarea} 
           style={{ width: '100%' }} 
           rows={4} 
         />
+        {errors.content && <span className={css.error}>{errors.content.message}</span>}
       </label>
 
       <label className={css.formGroup} style={{ alignItems: 'flex-start' }}>
@@ -63,7 +75,9 @@ const NoteForm = ({ onClose }: NoteFormProps) => {
       </label>
 
       <div className={css.actions}>
-        <button type="button" className={css.cancelButton} onClick={onClose}>Cancel</button>
+        <button type="button" className={css.cancelButton} onClick={onClose}>
+          Cancel
+        </button>
         <button type="submit" className={css.submitButton} disabled={isPending}>
           {isPending ? 'Creating...' : 'Create note'}
         </button>
