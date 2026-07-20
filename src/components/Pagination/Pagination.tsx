@@ -25,7 +25,6 @@ const Pagination = ({ page, totalPages, onPageChange }: PaginationProps) => {
         </li>
       ))}
 
-      {/* Кнопка "Вперед" */}
       <li className={page === totalPages ? css.disabled : ''} onClick={() => page < totalPages && onPageChange(page + 1)}>
         <a href="#">&rarr;</a>
       </li>

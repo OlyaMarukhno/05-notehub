@@ -109,3 +109,7 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+._list_130zb_1 {
+  grid-template-columns: repeat(4, 1fr) !important;
+}

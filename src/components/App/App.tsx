@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useQuery, keepPreviousData } from '@tanstack/react-query'; 
 import { fetchNotes } from '../../services/noteService';
 import NoteList from '../NoteList/NoteList';
 import SearchBox from '../SearchBox/SearchBox';
@@ -11,11 +11,24 @@ import css from './App.module.css';
 const App = () => {
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
+  const [debouncedSearch, setDebouncedSearch] = useState<string>(''); 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Логіка дебаунсу
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1); 
+    }, 500); 
+
+    return () => clearTimeout(handler);
+  }, [search]);
+
+ 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['notes', page, search],
-    queryFn: () => fetchNotes(page, search),
+    queryKey: ['notes', page, debouncedSearch],
+    queryFn: () => fetchNotes(page, debouncedSearch),
+    placeholderData: keepPreviousData,
   });
 
   return (
@@ -23,10 +36,7 @@ const App = () => {
       <header className={css.toolbar}>
         <SearchBox 
           value={search} 
-          onChange={(val) => {
-            setSearch(val);
-            setPage(1); 
-          }} 
+          onChange={setSearch} 
         />
         
         {data && (

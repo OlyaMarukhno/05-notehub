@@ -15,18 +15,18 @@ interface FetchNotesResponse {
 }
 
 export const fetchNotes = async (page: number = 1, search: string = ''): Promise<FetchNotesResponse> => {
-  const { data } = await api.get('/notes', {
+  const { data } = await api.get<FetchNotesResponse>('/notes', {
     params: { page, perPage: 12, search },
   });
   return data;
 };
 
-export const createNote = async (note: Omit<Note, 'id'>): Promise<Note> => {
-  const { data } = await api.post('/notes', note);
+export const createNote = async (note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>): Promise<Note> => {
+  const { data } = await api.post<Note>('/notes', note);
   return data;
 };
 
 export const deleteNote = async (id: string): Promise<Note> => {
-  const { data } = await api.delete(`/notes/${id}`);
+  const { data } = await api.delete<Note>(`/notes/${id}`);
   return data;
 };
