@@ -1,4 +1,13 @@
+import type { ComponentType } from "react";
+import ReactPaginateModule from "react-paginate";
+import type { ReactPaginateProps } from "react-paginate";
 import css from './Pagination.module.css';
+
+type ModuleWithDefault<T> = { default: T };
+
+const ReactPaginate = (
+  ReactPaginateModule as unknown as ModuleWithDefault<ComponentType<ReactPaginateProps>>
+).default;
 
 interface PaginationProps {
   page: number;
@@ -7,28 +16,25 @@ interface PaginationProps {
 }
 
 const Pagination = ({ page, totalPages, onPageChange }: PaginationProps) => {
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-
   return (
-    <ul className={css.pagination}>
-      <li className={page === 1 ? css.disabled : ''} onClick={() => page > 1 && onPageChange(page - 1)}>
-        <a href="#">&larr;</a>
-      </li>
-
-      {pages.map((p) => (
-        <li 
-          key={p} 
-          className={page === p ? css.active : ''} 
-          onClick={() => onPageChange(p)}
-        >
-          <a href="#">{p}</a>
-        </li>
-      ))}
-
-      <li className={page === totalPages ? css.disabled : ''} onClick={() => page < totalPages && onPageChange(page + 1)}>
-        <a href="#">&rarr;</a>
-      </li>
-    </ul>
+    <ReactPaginate
+      pageCount={totalPages}
+      pageRangeDisplayed={3}
+      marginPagesDisplayed={1}
+      forcePage={page - 1} 
+      onPageChange={(data) => onPageChange(data.selected + 1)}
+      
+      containerClassName={css.pagination}
+      pageClassName={""} 
+      pageLinkClassName={""} 
+      
+      activeClassName={css.active}
+      
+      previousLabel="&larr;"
+      nextLabel="&rarr;"
+      
+      breakClassName={css.pagination}
+    />
   );
 };
 

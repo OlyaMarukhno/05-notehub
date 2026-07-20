@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useQuery, keepPreviousData } from '@tanstack/react-query'; 
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchNotes } from '../../services/noteService';
 import NoteList from '../NoteList/NoteList';
 import SearchBox from '../SearchBox/SearchBox';
@@ -11,24 +11,23 @@ import css from './App.module.css';
 const App = () => {
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
-  const [debouncedSearch, setDebouncedSearch] = useState<string>(''); 
+  const [debouncedSearch, setDebouncedSearch] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Логіка дебаунсу
+  // Реалізація Debounce для пошуку
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
-      setPage(1); 
-    }, 500); 
+      setPage(1); // Скидаємо на 1 сторінку при кожному новому пошуку
+    }, 500);
 
     return () => clearTimeout(handler);
   }, [search]);
 
- 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['notes', page, debouncedSearch],
     queryFn: () => fetchNotes(page, debouncedSearch),
-    placeholderData: keepPreviousData,
+    placeholderData: keepPreviousData, // Усуває мерехтіння при переході сторінок
   });
 
   return (
@@ -36,7 +35,9 @@ const App = () => {
       <header className={css.toolbar}>
         <SearchBox 
           value={search} 
-          onChange={setSearch} 
+          onChange={(val) => {
+            setSearch(val);
+          }} 
         />
         
         {data && (

@@ -10,7 +10,6 @@ const api = axios.create({
 
 interface FetchNotesResponse {
   notes: Note[];
-  total: number;
   totalPages: number;
 }
 
