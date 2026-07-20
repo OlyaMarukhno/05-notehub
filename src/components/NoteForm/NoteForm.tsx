@@ -2,6 +2,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createNote } from '../../services/noteService';
 import { noteSchema } from '../../schemas/noteSchema';
+import type { NoteTag } from '../../types/note'; 
 import css from './NoteForm.module.css';
 
 interface NoteFormProps {
@@ -20,16 +21,21 @@ const NoteForm = ({ onClose }: NoteFormProps) => {
     
     onError: (error) => {
       console.error("Error while creating note:", error);
-      alert("Error.Please try again.");
+      alert("Error. Please try again.");
     }
   });
 
   return (
     <Formik
-      initialValues={{ title: '', content: '', tag: 'Todo' }}
+     
+      initialValues={{ title: '', content: '', tag: 'Todo' as NoteTag }}
       validationSchema={noteSchema}
       onSubmit={(values) => {
-        mutate(values);
+       
+        mutate({ 
+          ...values, 
+          tag: values.tag as NoteTag 
+        });
       }}
     >
       <Form className={css.form}>
