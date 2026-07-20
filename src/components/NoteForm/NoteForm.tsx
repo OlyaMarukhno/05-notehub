@@ -33,7 +33,13 @@ const NoteForm = ({ onClose }: NoteFormProps) => {
   });
 
   const onSubmit = (data: NoteFormData) => {
-    mutate(data);
+    // Явно створюємо об'єкт для коректної типізації
+    const noteData = {
+      title: data.title,
+      content: data.content,
+      tag: data.tag,
+    };
+    mutate(noteData);
   };
 
   return (
