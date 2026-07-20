@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { createNote } from '../../services/noteService';
-import { Note } from '../../types/note'; 
 import css from './NoteForm.module.css';
 
 interface NoteFormProps {
@@ -11,7 +10,7 @@ interface NoteFormProps {
 interface NoteFormData {
   title: string;
   content: string;
-  tag: string; 
+  tag: string;
 }
 
 const NoteForm = ({ onClose }: NoteFormProps) => {
@@ -37,7 +36,7 @@ const NoteForm = ({ onClose }: NoteFormProps) => {
     const noteData = {
       title: data.title,
       content: data.content,
-      tag: data.tag as any, 
+      tag: data.tag as any,
     };
     mutate(noteData);
   };
